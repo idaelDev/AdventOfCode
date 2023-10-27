@@ -5,7 +5,7 @@ Console.WriteLine("Advent of code !!");
 
 if(args.Length > 0)
 {
-    Start(args);
+    Start(args); 
 }
 else
 {
@@ -44,7 +44,7 @@ void Start(string[] args)
 void CreateTemplate(DateTime date)
 {
     Console.WriteLine(@$"Creating template for day {date.Day} of year {date.Year}");
-    string t = File.ReadAllText("./AdventOfCode/Templates/SolverTemplate.txt");
+    string t = File.ReadAllText("./../../../Templates/SolverTemplate.txt");
     t = t.Replace("<day>", date.Day.ToString());
     t = t.Replace("<year>", date.Year.ToString());
 

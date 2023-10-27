@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode
 {
-    internal class Solver_27_2023 : ISolver
+    //URL: https://adventofcode.com/2015/day/1
+    internal class Solver_1_2015 : ISolver
     {
         public string SolvePart1(string data, Action<float> progress, Action<string> debug)
         {
-            return "unsolved";
+            return (data.Count(c => c == '(') - data.Count(c => c == ')')).ToString();
         }
 
         public string SolvePart2(string data, Action<float> progress, Action<string> debug)

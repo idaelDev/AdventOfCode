@@ -9,7 +9,7 @@ namespace AdventOfCode.API
     internal static class Tools
     {
 
-        public static string WorkFolder(DateTime date) => "./AdventOfCode/Solvers/" + date.Year;
+        public static string WorkFolder(DateTime date) => "./../../../Solvers/" + date.Year + "/Day_" + date.Day;
         public static string ClassFile(DateTime date) => @$"{WorkFolder(date)}/Solver_{date.Day}_{date.Year}.cs";
         public static string TestInput(DateTime date) => @$"{WorkFolder(date)}/input_test.txt";
         public static string Input(DateTime date) => @$"{WorkFolder(date)}/input.txt";

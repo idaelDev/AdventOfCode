@@ -17,7 +17,14 @@ namespace AdventOfCode
 
         public string SolvePart2(string data, Action<float> progress, Action<string> debug)
         {
-            return "unsolved";
+            int floor = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                floor += data[i] == '(' ? 1 : -1;
+                if (floor < 0)
+                    return (i + 1).ToString();
+            }
+            return "";
         }
     }
 }

@@ -64,6 +64,7 @@ void Solve(DateTime date, bool test)
 
     string input = test ? Tools.GetTestData(date) : Tools.GetInputData(date);
     Console.WriteLine("Launch Part 1");
+    
     string r1 = s.SolvePart1(input, i => Console.WriteLine(i), s => Console.WriteLine(s));
     Console.WriteLine("End Part 1:\n\t"+r1);
 

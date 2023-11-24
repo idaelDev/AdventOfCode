@@ -1,11 +1,12 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using AdventOfCode.API;
+using System.Diagnostics;
 
 Console.WriteLine("Advent of code !!");
 
-if(args.Length > 0)
+if (args.Length > 0)
 {
-    Start(args); 
+    Start(args);
 }
 else
 {
@@ -16,29 +17,50 @@ else
 
 void Start(string[] args)
 {
-    DateTime date = DateTime.Now;
-    int index = args.Length > 2 ? 1:0;
-    if (int.TryParse(args[index], out int day) && int.TryParse(args[index+1], out int year))
+    if (args.Length == 0)
     {
-        date = new DateTime(year, 12, day);
+        return;
     }
 
-    if(args.Length > 2)
+    if (args[0] == "c" || args[0] == "create")
     {
-        if (args[0] == "c" || args[0] == "create")
+        CreateTemplate(GetDate(args));
+    }
+
+    bool test = false;
+    bool part1 = true;
+    bool part2 = true;
+    if (args[0] == "t" || args[0] == "test")
+    {
+        test = true;
+    }
+
+    if (args.Length > 3)
+    {
+        if (args[3] == "1")
         {
-            CreateTemplate(date);
-            return;
+            part2 = false;
         }
-        if (args[0] == "t" || args[0] == "test")
+        if (args[3] == "2")
         {
-            Solve(date, true);
-            return;
+            part1 = false;
         }
     }
 
-    Solve(date, false);
+    Solve(GetDate(args), test, part1, part2);
+}
 
+DateTime GetDate(string[] args)
+{
+    DateTime d = DateTime.Now;
+    if (args.Length > 2)
+    {
+        if (int.TryParse(args[1], out int day) && int.TryParse(args[2], out int year))
+        {
+            d = new DateTime(year, 12, day);
+        }
+    }
+    return d;
 }
 
 void CreateTemplate(DateTime date)
@@ -57,20 +79,34 @@ void CreateTemplate(DateTime date)
     Console.WriteLine("Done");
 }
 
-void Solve(DateTime date, bool test)
+void Solve(DateTime date, bool test, bool part1, bool part2)
 {
+    Stopwatch timer = new Stopwatch();
+
     Console.WriteLine(@$"Solving day {date.Day} of year {date.Year}");
     ISolver s = Tools.FindSolver(date);
 
     string input = test ? Tools.GetTestData(date) : Tools.GetInputData(date);
-    Console.WriteLine("Launch Part 1");
-    
-    string r1 = s.SolvePart1(input, i => Console.WriteLine(i), s => Console.WriteLine(s));
-    Console.WriteLine("End Part 1:\n\t"+r1);
+    string r1 = null;
+    string r2 = null;
+    if (part1)
+    {
+        Console.WriteLine("Launch Part 1");
+        timer.Start();
+        r1 = s.SolvePart1(input, i => Console.WriteLine(i), s => Console.WriteLine(s));
+        timer.Stop();
+        Console.WriteLine("End Part 1 in " + timer.ElapsedMilliseconds + "ms:\n\t" + r1);
+        timer.Reset();
+    }
 
-    Console.WriteLine("Launch Part 2");
-    string r2 = s.SolvePart2(input, i => Console.WriteLine(i), s => Console.WriteLine(s));
-    Console.WriteLine("End Part 2:\n\t"+r2);
+    if (part2)
+    {
+        Console.WriteLine("Launch Part 2");
+        timer.Start();
+        r2 = s.SolvePart2(input, i => Console.WriteLine(i), s => Console.WriteLine(s));
+        timer.Stop();
+        Console.WriteLine("End Part 2 in \"+ timer.ElapsedMilliseconds +\"ms:\n\t" + r2);
+    }
 
     Tools.WriteOutput(date, r1, r2);
 }

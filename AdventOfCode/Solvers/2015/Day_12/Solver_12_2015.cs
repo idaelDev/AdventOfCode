@@ -26,8 +26,31 @@ namespace AdventOfCode
 
         public string SolvePart2(string data, Action<float> progress, Action<string> debug)
         {
-            JsonDocument jd = JsonDocument.Parse(data);
-            return "unsolved";
+            JsonElement root = JsonDocument.Parse(data).RootElement;
+            return GetSum(root).ToString();
         }
+
+        private int GetSum(JsonElement e)
+        {
+            switch (e.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    JsonElement.ObjectEnumerator oe =  e.EnumerateObject();
+                    if(oe.Any(j => j.Name == "red" || (j.Value.ValueKind == JsonValueKind.String && j.Value.ValueEquals("red"))))
+                    {
+                        return 0;
+                    }
+                    return oe.Select(j => GetSum(j.Value)).Sum();
+                case JsonValueKind.Array:
+                    JsonElement.ArrayEnumerator ae = e.EnumerateArray();
+                    return ae.Select(j => GetSum(j)).Sum();
+                    break;
+                case JsonValueKind.Number:
+                    return e.GetInt32();
+                default:
+                    return 0;
+            }
+        }
+
     }
 }

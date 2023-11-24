@@ -10,9 +10,12 @@ if (args.Length > 0)
 }
 else
 {
-    Console.Write(">>> ");
-    string[] m = Console.ReadLine().Replace(">>> ", string.Empty).Split(' ');
-    Start(m);
+    while (true)
+    {
+        Console.Write(">>> ");
+        string[] m = Console.ReadLine().Replace(">>> ", string.Empty).Split(' ');
+        Start(m);
+    }
 }
 
 void Start(string[] args)

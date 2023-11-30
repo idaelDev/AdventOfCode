@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+/AdventOfCode/Solvers/2015/Day_13/input.txt
+/AdventOfCode/Solvers/2015/Day_13/input.txt

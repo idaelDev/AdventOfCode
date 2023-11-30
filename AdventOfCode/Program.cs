@@ -25,9 +25,16 @@ void Start(string[] args)
         return;
     }
 
+    if (args[0] == "cy")
+    {
+        CreateFullTemplate(GetDate(args).Year);
+        return;
+    }
+
     if (args[0] == "c" || args[0] == "create")
     {
         CreateTemplate(GetDate(args));
+        return;
     }
 
     bool test = false;
@@ -64,6 +71,15 @@ DateTime GetDate(string[] args)
         }
     }
     return d;
+}
+
+
+void CreateFullTemplate(int year)
+{
+    for (int i = 1; i < 26; i++)
+    {
+        CreateTemplate(new DateTime(year, 12, i));
+    }
 }
 
 void CreateTemplate(DateTime date)

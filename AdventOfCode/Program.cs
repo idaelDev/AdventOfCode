@@ -124,7 +124,7 @@ void Solve(DateTime date, bool test, bool part1, bool part2)
         timer.Start();
         r2 = s.SolvePart2(input, i => Console.WriteLine(i), s => Console.WriteLine(s));
         timer.Stop();
-        Console.WriteLine("End Part 2 in \"+ timer.ElapsedMilliseconds +\"ms:\n\t" + r2);
+        Console.WriteLine("End Part 2 in "+ timer.ElapsedMilliseconds +"ms:\n\t" + r2);
     }
 
     Tools.WriteOutput(date, r1, r2);

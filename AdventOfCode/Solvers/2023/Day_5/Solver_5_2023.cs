@@ -1,10 +1,4 @@
 using AdventOfCode.API;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode
 {
@@ -30,7 +24,7 @@ namespace AdventOfCode
                 {
                     foreach (Converter range in converter)
                     {
-                        if(seedValue >= range.Source && seedValue < range.Source + range.Range)
+                        if (seedValue >= range.Source && seedValue < range.Source + range.Range)
                         {
                             seedValue = range.Destination + (seedValue - range.Source);
                             break;
@@ -52,42 +46,80 @@ namespace AdventOfCode
             {
                 converters.Add(ParseConverter(lines[i]));
             }
-
-            List<uint> soils = new List<uint>();
-            for(int i=0; i< seeds.Length; i=i+2)
+            List<SeedRange> seedRanges = new List<SeedRange>();
+            for (int i = 0; i < seeds.Length; i = i + 2)
             {
-                for (uint s = seeds[i]; s < seeds[i]+seeds[i+1]; s++)
-                {
-                    uint seedValue = s;
-                    foreach (Converter[] converter in converters)
-                    {
-                        foreach (Converter range in converter)
-                        {
-                            if (seedValue >= range.Source && seedValue < range.Source + range.Range)
-                            {
-                                seedValue = range.Destination + (seedValue - range.Source);
-                                break;
-                            }
-                        }
-                    }
-                    soils.Add(seedValue);
-                }
-                Console.WriteLine($@"Part {i}/{seeds.Length}");
+                seedRanges.Add(new SeedRange() { Value = seeds[i], Range = seeds[i + 1] });
             }
-            return soils.Min().ToString();
+
+            List<SeedRange> results = new List<SeedRange>();
+            foreach (Converter[] c in converters)
+            {
+                results.Clear();
+                foreach (SeedRange sr in seedRanges)
+                {
+                    results.AddRange(RangeSolve(sr, c, 0));
+                }
+                seedRanges.Clear();
+                seedRanges.AddRange(results);
+            }
+            var v = results.OrderBy(x => x.Value).ToList();
+            return results.Where(sr => sr.Value != 0).MinBy(sr => sr.Value).Value.ToString();
+        }
+
+        private SeedRange[] RangeSolve(SeedRange sr, Converter[] converters, int converterIndex)
+        {
+            uint end = sr.Value + sr.Range - 1;
+            List<SeedRange> results = new List<SeedRange>();
+            for (int i = converterIndex; i < converters.Length; i++)
+            {
+                uint converterEnd = converters[i].Source + converters[i].Range;
+                //Rentre complet
+                if (sr.Value >= converters[i].Source && sr.Value < converterEnd)
+                {
+                    //Rentre Complet dans le range
+                    if (end >= converters[i].Source && end < converterEnd)
+                    {
+                        results.Add(new SeedRange() { Value = converters[i].Destination + (sr.Value - converters[i].Source), Range = sr.Range });
+                        return results.ToArray();
+                    }
+                    //Le début rentre mais pas la fin
+                    else if (end >= converterEnd)
+                    {
+                        results.AddRange(RangeSolve(new SeedRange() { Value = sr.Value, Range = converterEnd - sr.Value }, converters, i));
+                    }
+                }
+                //Le debut rentre pas mais la fin si
+                else if (end >= converters[i].Source && end < converterEnd)
+                {
+                    results.AddRange(RangeSolve(new SeedRange() { Value = converters[i].Source, Range = end - converters[i].Source + 1 }, converters, i));
+                }
+                //Une partie du milieu est in range
+                else if (sr.Value < converters[i].Source && end >= converterEnd)
+                {
+                    results.AddRange(RangeSolve(new SeedRange() { Value = converters[i].Source, Range = converters[i].Range }, converters, i));
+                }
+            }
+            results.Add(sr);
+            return results.ToArray();
         }
 
         private Converter[] ParseConverter(string entry)
         {
             string[] lines = Tools.LineSplit(entry);
             List<Converter> results = new List<Converter>();
-            for(int i = 1; i<lines.Length; i++) 
+            for (int i = 1; i < lines.Length; i++)
             {
                 string[] v = lines[i].Split();
                 results.Add(new Converter() { Destination = uint.Parse(v[0]), Source = uint.Parse(v[1]), Range = uint.Parse(v[2]) });
-                
             }
             return results.ToArray();
+        }
+
+        public struct SeedRange
+        {
+            public uint Value;
+            public uint Range;
         }
 
         public struct Converter
@@ -96,6 +128,5 @@ namespace AdventOfCode
             public uint Destination;
             public uint Range;
         }
-
     }
 }

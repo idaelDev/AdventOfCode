@@ -38,6 +38,11 @@ namespace AdventOfCode.API
             File.WriteAllText(Output(date), sb.ToString());
         }
 
+        public static string[] EmpltyLineSplit(string text)
+        {
+            return text.Split(@$"{Environment.NewLine}{Environment.NewLine}", StringSplitOptions.RemoveEmptyEntries);
+        }
+
         public static string[] LineSplit(string text)
         {
             return text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);

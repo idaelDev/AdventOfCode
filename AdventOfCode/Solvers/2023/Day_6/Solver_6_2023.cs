@@ -39,7 +39,7 @@ namespace AdventOfCode
             string[] lines = Tools.LineSplit(data);
             double time = double.Parse(lines[0].Split(':')[1].Trim().Replace(" ", string.Empty));
             double distance = double.Parse(lines[1].Split(':')[1].Trim().Replace(" ", string.Empty));
-
+            //f(x) = -x^2 + time*x - distance
             double d = (time * time) - (4 * -1 * -distance);
 
             double x1 = (-time + Math.Sqrt(d)) / -2;

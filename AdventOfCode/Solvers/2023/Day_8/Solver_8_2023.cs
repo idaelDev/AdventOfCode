@@ -64,24 +64,7 @@ namespace AdventOfCode
                 cycles[i] = count;
             }
 
-            long ppcm = cycles[0];
-            for (int i = 1; i < cycles.Length; i++)
-            {  
-                ppcm = (ppcm * cycles[i]) / GetPGCD(ppcm, cycles[i]);
-            }
-
-            return ppcm.ToString();
-        }
-
-        static long GetPGCD(long a, long b)
-        {
-            while (b != 0)
-            {
-                long temp = b;
-                b = a % b;
-                a = temp;
-            }
-            return a;
+            return MathHelper.LCM(cycles).ToString();
         }
 
     }

@@ -39,17 +39,10 @@ namespace AdventOfCode
             string[] lines = Tools.LineSplit(data);
             double time = double.Parse(lines[0].Split(':')[1].Trim().Replace(" ", string.Empty));
             double distance = double.Parse(lines[1].Split(':')[1].Trim().Replace(" ", string.Empty));
-            
+
             //f(x) = -x^2 + time*x - distance
-            double d = (time * time) - (4 * -1 * -distance);
-
-            double x1 = (-time + Math.Sqrt(d)) / -2;
-            double x2 = (-time - Math.Sqrt(d)) / -2;
-
-            double min = Math.Floor(Math.Min(x1, x2));
-            double max = Math.Floor(Math.Max(x1, x2));
-
-            int result = (int)(max - min);
+            double[] results = MathHelper.QuadraticEquation(-1, -distance, time);
+            int result = (int)(Math.Floor(results.Max()) - Math.Floor(results.Min()));
 
             return result.ToString();
         }

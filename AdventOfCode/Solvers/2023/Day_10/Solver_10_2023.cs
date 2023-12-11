@@ -71,6 +71,7 @@ namespace AdventOfCode
             List<(int, int)> polygon = new List<(int, int)>();
             int index = 1;
             polygon.Add(loop[0]);
+            //Create polygon
             while (index < loop.Count -1)
             {
                 if (loop[index].Item2 == polygon.Last().Item2)
@@ -96,6 +97,7 @@ namespace AdventOfCode
             (int, int) minBounds = (polygon.MinBy(x => x.Item1).Item1, polygon.MinBy(x => x.Item2).Item2);
             (int, int) maxBounds = (polygon.MaxBy(x => x.Item1).Item1, polygon.MaxBy(x => x.Item2).Item2);
 
+            //raycast all area
             int count = 0;
             for (int l = minBounds.Item1; l <= maxBounds.Item1; l++)
             {
@@ -137,7 +139,6 @@ namespace AdventOfCode
             return connected.ToArray();
         }
 
-        // Fonction pour vérifier si un point est à l'intérieur d'un polygone
         internal bool IsPointInsidePolygon((int, int) point, List<(int, int)> polygon)
         {
             int count = 0;

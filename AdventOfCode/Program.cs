@@ -89,12 +89,12 @@ void CreateTemplate(DateTime date)
     t = t.Replace("<day>", date.Day.ToString());
     t = t.Replace("<year>", date.Year.ToString());
 
-    if (!Directory.Exists(Tools.WorkFolder(date)))
-        Directory.CreateDirectory(Tools.WorkFolder(date));
-    File.WriteAllText(Tools.ClassFile(date), t);
+    if (!Directory.Exists(IOTools.WorkFolder(date)))
+        Directory.CreateDirectory(IOTools.WorkFolder(date));
+    File.WriteAllText(IOTools.ClassFile(date), t);
 
-    File.Create(Tools.Input(date));
-    File.Create(Tools.TestInput(date));
+    File.Create(IOTools.Input(date));
+    File.Create(IOTools.TestInput(date));
     Console.WriteLine("Done");
 }
 
@@ -103,9 +103,9 @@ void Solve(DateTime date, bool test, bool part1, bool part2)
     Stopwatch timer = new Stopwatch();
 
     Console.WriteLine(@$"Solving day {date.Day} of year {date.Year}");
-    ISolver s = Tools.FindSolver(date);
+    ISolver s = IOTools.FindSolver(date);
 
-    string input = test ? Tools.GetTestData(date) : Tools.GetInputData(date);
+    string input = test ? IOTools.GetTestData(date) : IOTools.GetInputData(date);
     string r1 = null;
     string r2 = null;
     if (part1)
@@ -127,5 +127,5 @@ void Solve(DateTime date, bool test, bool part1, bool part2)
         Console.WriteLine("End Part 2 in "+ timer.ElapsedMilliseconds +"ms:\n\t" + r2);
     }
 
-    Tools.WriteOutput(date, r1, r2);
+    IOTools.WriteOutput(date, r1, r2);
 }

@@ -1,6 +1,7 @@
 using AdventOfCode.API;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,42 +11,47 @@ namespace AdventOfCode
     //URL: https://adventofcode.com/2024/day/11
     internal class Solver_11_2024 : ISolver
     {
+
         public string SolvePart1(string data, Action<float> progress, Action<string> debug)
         {
-            List<ulong> stones = data.Split(' ').Select(x => ulong.Parse(x)).ToList();
+            Dictionary<long, long> map = new Dictionary<long, long>();
+            string[] s = data.Split(' ');
+            for(int i = 0; i < s.Length; i++)
+            {
+                long l = long.Parse(s[i].ToString());
+                map[l] = 1;
+            }
 
-            Console.WriteLine("Initial arrangement:");
-            DrawLine(ref stones);
+            for(int i = 0; i < 25; i++)
+            {
+                map = Blink(map);
+            }
+            long result = map.Values.Sum(x => (long)x);
 
-            //for(int i = 0; i < 25; i++)
-            //{
-            //    Blink(ref stones);
-            //    //Console.WriteLine("After " + (i + 1) + " blink");
-            //    //DrawLine(ref stones);
-            //}
-
-            return SerialBlink(25, 0, ref stones, 100000).ToString();
+            return result.ToString();
         }
 
         public string SolvePart2(string data, Action<float> progress, Action<string> debug)
         {
-            List<ulong> stones = data.Split(' ').Select(x => ulong.Parse(x)).ToList();
+            Dictionary<long, long> map = new Dictionary<long, long>();
+            string[] s = data.Split(' ');
+            for(int i = 0; i < s.Length; i++)
+            {
+                long l = long.Parse(s[i].ToString());
+                map[l] = 1;
+            }
 
-            Console.WriteLine("Initial arrangement:");
-            DrawLine(ref stones);
+            for(int i = 0; i < 75; i++)
+            {
+                map = Blink(map);
+                Console.WriteLine(i);
+            }
+            long result = map.Values.Sum(x => (long)x);
 
-            //for(int i = 0; i < 75; i++)
-            //{
-            //    Blink(ref stones);
-            //    Console.WriteLine("After " + (i + 1) + " blink");
-            //    //DrawLine(ref stones);
-            //}
-
-            //return stones.Count.ToString();
-            return SerialBlink(75, 0, ref stones, 100000).ToString();
+            return result.ToString();
         }
 
-        void DrawLine(ref List<ulong> stones)
+        void DrawLine(ref List<long> stones)
         {
             StringBuilder sb = new StringBuilder();
             for(int i = 0; i < stones.Count; i++)
@@ -55,52 +61,71 @@ namespace AdventOfCode
             Console.WriteLine(sb.ToString());
         }
 
-        int SerialBlink(int blinkmax, int blink, ref List<ulong> baseStones, int maxArray)
-        {
-            int currentBlink = blink;
-            List<ulong> stones = new List<ulong>(baseStones);
-            while(stones.Count < maxArray && currentBlink < blinkmax)
-            {
-                Blink(ref stones);
-                currentBlink++;
+        //int SerialBlink(int blinkmax, int blink, ref List<long> baseStones, int maxArray)
+        //{
+        //    int currentBlink = blink;
+        //    List<long> stones = new List<long>(baseStones);
+        //    while(stones.Count < maxArray && currentBlink < blinkmax)
+        //    {
+        //        Blink(ref stones);
+        //        currentBlink++;
                 
-            }
+        //    }
 
-            if(currentBlink == blinkmax)
-            {
-                return stones.Count;
-            }
+        //    if(currentBlink == blinkmax)
+        //    {
+        //        return stones.Count;
+        //    }
 
-            List<ulong>[] l = { stones.Take(stones.Count / 2).ToList(), stones.Skip(stones.Count / 2).ToList()};
+        //    List<long>[] l = { stones.Take(stones.Count / 2).ToList(), stones.Skip(stones.Count / 2).ToList()};
 
-            int[] results = new int[2];
-            Parallel.For(0, l.Length, i =>
-            {
-                results[i] = SerialBlink(blinkmax, currentBlink, ref l[i], maxArray);
-            });
+        //    int[] results = new int[2];
+        //    Parallel.For(0, l.Length, i =>
+        //    {
+        //        results[i] = SerialBlink(blinkmax, currentBlink, ref l[i], maxArray);
+        //    });
             
-            return results[0] + results[1];
-        }
+        //    return results[0] + results[1];
+        //}
 
-        void Blink(ref List<ulong> stones)
+        Dictionary<long, long> Blink(Dictionary<long, long> map)
         {
-            int c = stones.Count;
-            for(int i = 0; i < c; i++)
+            Dictionary<long, long> newMap = new Dictionary<long, long>();
+            foreach(long key in map.Keys)
             {
-                if(stones[i] == 0)
+                if(key == 0)
                 {
-                    stones[i] = 1;
+                    if(!newMap.ContainsKey(1))
+                    {
+                        newMap[1] = 0;
+                    }
+                    newMap[1] += map[key];
                     continue;
                 }
-                string sV = stones[i].ToString();
+                string sV = key.ToString();
                 if(sV.Length % 2 == 0)
                 {
-                    stones[i] = ulong.Parse(sV.Substring(0, sV.Length / 2));
-                    stones.Add(ulong.Parse(sV.Substring(sV.Length / 2)));
+                    long left = long.Parse(sV.Substring(0, sV.Length / 2));
+                    if(!newMap.ContainsKey(left))
+                    {
+                        newMap[left] = 0;
+                    }
+                    long right = long.Parse(sV.Substring(sV.Length / 2));
+                    if(!newMap.ContainsKey(right))
+                    {
+                        newMap[right] = 0;
+                    }
+                    newMap[left] += map[key];
+                    newMap[right] += map[key];
                     continue;
                 }
-                stones[i] *= 2024;
+                if(!newMap.ContainsKey(key * 2024))
+                {
+                    newMap[key * 2024] = 0;
+                }
+                newMap[key * 2024] = map[key];
             }
+            return newMap;
         }
     }
 }
